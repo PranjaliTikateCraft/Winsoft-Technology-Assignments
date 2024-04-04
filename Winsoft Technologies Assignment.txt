@@ -1,0 +1,214 @@
+1. Merge two array by satisfying given constrains.
+
+import java.util.Arrays;
+ 
+class Main
+{
+    // Function to merge X[0… m] and Y[0… n] into X[0… m+n+1]
+    private static void merge(int[] X, int[] Y, int m, int n)
+    {
+        // size of X[] is k+1
+        int k = m + n + 1;
+ 
+        // run if X[] or Y[] has elements left
+        while (m >= 0 && n >= 0)
+        {
+            // put the next greater element in the next free position in X[]
+            // from the end
+            if (X[m] > Y[n]) {
+                X[k--] = X[m--];
+            }
+            else {
+                X[k--] = Y[n--];
+            }
+        }
+ 
+        // copy the remaining elements of Y[] (if any) to X[]
+        while (n >= 0) {
+            X[k--] = Y[n--];
+        }
+ 
+        // fill Y[] with all zeros
+        Arrays.fill(Y, 0);
+    }
+ 
+    // The function moves non-empty elements in X[] in the
+    // beginning and then merge them with Y[]
+    public static void rearrange(int[] X, int[] Y)
+    {
+        // return if X is empty
+        if (X.length == 0) {
+            return;
+        }
+ 
+        // moves non-empty elements of X[] at the beginning
+        int k = 0;
+        for (int value: X)
+        {
+            if (value != 0) {
+                X[k++] = value;
+            }
+        }
+ 
+        // merge X[0…k-1] and Y[0… n-1] into X[0… m-1]
+        merge(X, Y, k - 1, Y.length - 1);
+    }
+ 
+    public static void main (String[] args)
+    {
+        // vacant cells in X[] is represented by 0
+        int[] X = { 0, 2, 0, 3, 0, 5, 6, 0, 0};
+        int[] Y = { 1, 8, 9, 10, 15 };
+ 
+        /* Validate input before calling rearrange()
+            1. Both arrays X[] and Y[] should be sorted (ignore 0's in X[])
+            2. Size of array X[] >= size of array Y[] (i.e., m >= n)
+            3. Total number of vacant cells in array X[] = size of array Y[] */
+ 
+        // merge Y[] into X[]
+        rearrange(X, Y);
+ 
+        // print merged array
+        System.out.println(Arrays.toString(X));
+    }
+
+2. Find Maximum sum patch involving elements of given array.
+
+class Main
+{
+    // Function to find the maximum sum path in two given arrays.
+    // The code is similar to the merge routine of the merge sort algorithm
+    public static int findMaxSum(int[] X, int[] Y)
+    {
+        int sum = 0;
+        int sum_x = 0, sum_y = 0;
+ 
+        int m = X.length, n = Y.length;
+ 
+        // i and j denotes the current index of X and Y, respectively
+        int i = 0, j = 0;
+ 
+        // loop till X and Y are empty
+        while (i < m && j < n)
+        {
+            // to handle the duplicate elements in X
+            while (i < m-1 && X[i] == X[i+1]) {
+                sum_x += X[i++];
+            }
+ 
+            // to handle the duplicate elements in Y
+            while (j < n-1 && Y[j] == Y[j+1]) {
+                sum_y += Y[j++];
+            }
+ 
+            // if the current element of Y is less than the current element of X
+            if (Y[j] < X[i])
+            {
+                sum_y += Y[j];
+                j++;
+            }
+ 
+            // if the current element of X is less than the current element of Y
+            else if (X[i] < Y[j])
+            {
+                sum_x += X[i];
+                i++;
+            }
+ 
+            else    // if (X[i] == Y[j])
+            {
+                // consider the maximum sum and include the current cell's value
+                sum += Integer.max(sum_x, sum_y) + X[i];
+ 
+                // move both indices by 1 position
+                i++;
+                j++;
+ 
+                // reset both sums
+                sum_x = 0;
+                sum_y = 0;
+            }
+        }
+ 
+        // process the remaining elements of X (if any)
+        while (i < m) {
+            sum_x += X[i++];
+        }
+ 
+        // process the remaining elements of Y (if any)
+        while (j < n) {
+            sum_y += Y[j++];
+        }
+ 
+        sum += Integer.max(sum_x, sum_y);
+        return sum;
+    }
+ 
+    public static void main(String[] args)
+    {
+        int[] X = { 3, 6, 7, 8, 10, 12, 15, 18, 100 };
+        int[] Y = { 1, 2, 3, 5, 7, 9, 10, 11, 15, 16, 18, 25, 50 };
+ 
+        System.out.println("The maximum sum is " + findMaxSum(X, Y));
+    }
+}
+
+3. java program to count number of words in string using HashMap.
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+ 
+class GFG {
+    public static void main(String[] args)
+    {
+ 
+        String str = "Alice is girl and Bob is boy";
+ 
+        Map<String, Integer> hashMap = new HashMap<>();
+ 
+        String[] words = str.split(" ");
+ 
+        for (String word : words) {
+            // containsKey(key) will return a boolean value
+            // i.e. true if it contains the key and false if
+            // it doesn't.
+            if (hashMap.containsKey(word))
+                hashMap.put(word, hashMap.get(word) + 1);
+ 
+            else
+                hashMap.put(word, 1);
+        }
+ 
+        System.out.println(hashMap);
+    }
+}
+
+
+4. Java program to find the duplicate characters in string.
+
+public class DuplicateCharacters {    
+     public static void main(String[] args) {    
+        String string1 = "Great responsibility";    
+        int count;    
+            
+        //Converts given string into character array    
+        char string[] = string1.toCharArray();    
+            
+        System.out.println("Duplicate characters in a given string: ");    
+        //Counts each character present in the string    
+        for(int i = 0; i <string.length; i++) {    
+            count = 1;    
+            for(int j = i+1; j <string.length; j++) {    
+                if(string[i] == string[j] && string[i] != ' ') {    
+                    count++;    
+                    //Set string[j] to 0 to avoid printing visited character    
+                    string[j] = '0';    
+                }    
+            }    
+            //A character is considered as duplicate if count is greater than 1    
+            if(count > 1 && string[i] != '0')    
+                System.out.println(string[i]);    
+        }    
+    }    
+}
